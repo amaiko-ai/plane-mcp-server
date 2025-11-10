@@ -14,7 +14,25 @@ MCP server for managing [Plane](https://plane.so) intake queue (triage workflow)
 
 ## Installation
 
-### Option 1: Standalone Binary (Recommended for most users)
+### Quick Install (Recommended)
+
+**macOS and Linux:**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/amaiko-ai/plane-mcp-server/main/install.sh | bash
+```
+
+This will:
+- ✅ Download the correct binary for your platform
+- ✅ Install to `~/.local/bin/plane-mcp-server`
+- ✅ Configure Claude Desktop automatically
+- ✅ Restart Claude Desktop (macOS)
+
+**No Node.js required!**
+
+### Manual Installation
+
+#### Option 1: Standalone Binary
 
 Download the pre-built binary for your platform from the [latest release](https://github.com/amaiko-ai/plane-mcp-server/releases/latest):
 
@@ -24,19 +42,7 @@ Download the pre-built binary for your platform from the [latest release](https:
 - **Linux ARM64**: `plane-mcp-server-linux-arm64`
 - **Windows x64**: `plane-mcp-server-windows-x64.exe`
 
-**No Node.js required!** Just download, make executable, and use:
-
-```bash
-# macOS/Linux: Make executable
-chmod +x plane-mcp-server-macos-arm64
-
-# Run it
-./plane-mcp-server-macos-arm64
-```
-
-#### Claude Desktop Configuration
-
-Add to your `claude_desktop_config.json` using the absolute path to your downloaded binary:
+Then configure Claude Desktop manually:
 
 ```json
 {
@@ -54,11 +60,12 @@ Add to your `claude_desktop_config.json` using the absolute path to your downloa
 }
 ```
 
-### Option 2: Via npm (Requires Node.js)
+Config location: `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS)
 
-If you already have Node.js installed, you can use npm:
+#### Option 2: Via npm (Requires Node.js)
 
-#### Claude Desktop
+<details>
+<summary>Click to expand npm installation instructions</summary>
 
 Add to your `claude_desktop_config.json`:
 
@@ -111,24 +118,11 @@ Then update your config with the absolute path:
 - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
 - Linux: `~/.config/Claude/claude_desktop_config.json`
 
+</details>
+
 ### Claude Code Plugin
 
 If you're using the Amaiko Plane plugin for Claude Code, this server is automatically configured. See the [plane plugin](https://github.com/amaiko-ai/claude-plugins) for details.
-
-### Direct Usage
-
-You can also run the server directly:
-
-```bash
-npx @amaiko-ai/plane-mcp-server
-```
-
-Or install globally:
-
-```bash
-npm install -g @amaiko-ai/plane-mcp-server
-plane-mcp-server
-```
 
 ## Configuration
 
