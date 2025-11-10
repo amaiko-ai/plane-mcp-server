@@ -1,0 +1,56 @@
+{
+  "name": "@amaiko-ai/plane-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP server for managing Plane intake queue and issue workflows",
+  "type": "module",
+  "bin": {
+    "plane-mcp-server": "./build/index.js"
+  },
+  "main": "./build/index.js",
+  "files": [
+    "build",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc && chmod +x build/index.js",
+    "dev": "tsx src/index.ts",
+    "prepublishOnly": "pnpm build",
+    "test": "echo \"Tests coming soon\" && exit 0"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "plane",
+    "intake",
+    "triage",
+    "issue-management",
+    "project-management",
+    "claude",
+    "ai"
+  ],
+  "author": {
+    "name": "Amaiko",
+    "url": "https://github.com/amaiko-ai"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/amaiko-ai/plane-mcp-server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/amaiko-ai/plane-mcp-server/issues"
+  },
+  "homepage": "https://github.com/amaiko-ai/plane-mcp-server#readme",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

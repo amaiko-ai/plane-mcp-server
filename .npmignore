@@ -1,0 +1,25 @@
+# Source files (build outputs are published)
+src/
+tsconfig.json
+
+# Development
+.github/
+.vscode/
+.idea/
+
+# Tests
+*.test.ts
+*.spec.ts
+test/
+tests/
+__tests__/
+
+# Config
+.eslintrc*
+.prettierrc*
+.editorconfig
+
+# Misc
+.env*
+.DS_Store
+*.log
