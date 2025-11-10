@@ -14,7 +14,51 @@ MCP server for managing [Plane](https://plane.so) intake queue (triage workflow)
 
 ## Installation
 
-### Claude Desktop
+### Option 1: Standalone Binary (Recommended for most users)
+
+Download the pre-built binary for your platform from the [latest release](https://github.com/amaiko-ai/plane-mcp-server/releases/latest):
+
+- **macOS ARM64** (Apple Silicon): `plane-mcp-server-macos-arm64`
+- **macOS x64** (Intel): `plane-mcp-server-macos-x64`
+- **Linux x64**: `plane-mcp-server-linux-x64`
+- **Linux ARM64**: `plane-mcp-server-linux-arm64`
+- **Windows x64**: `plane-mcp-server-windows-x64.exe`
+
+**No Node.js required!** Just download, make executable, and use:
+
+```bash
+# macOS/Linux: Make executable
+chmod +x plane-mcp-server-macos-arm64
+
+# Run it
+./plane-mcp-server-macos-arm64
+```
+
+#### Claude Desktop Configuration
+
+Add to your `claude_desktop_config.json` using the absolute path to your downloaded binary:
+
+```json
+{
+  "mcpServers": {
+    "plane-intake": {
+      "command": "/path/to/plane-mcp-server-macos-arm64",
+      "args": [],
+      "env": {
+        "PLANE_API_KEY": "your-api-key-here",
+        "PLANE_API_HOST_URL": "https://app.plane.so",
+        "PLANE_WORKSPACE_SLUG": "your-workspace"
+      }
+    }
+  }
+}
+```
+
+### Option 2: Via npm (Requires Node.js)
+
+If you already have Node.js installed, you can use npm:
+
+#### Claude Desktop
 
 Add to your `claude_desktop_config.json`:
 
@@ -187,7 +231,11 @@ pnpm install
 ### Build
 
 ```bash
+# Build TypeScript
 pnpm build
+
+# Build standalone executables (requires Bun)
+./scripts/build-executables.sh
 ```
 
 ### Test Locally

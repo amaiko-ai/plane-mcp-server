@@ -9,11 +9,13 @@
   "main": "./build/index.js",
   "files": [
     "build",
+    "scripts",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
     "build": "tsc && chmod +x build/index.js",
+    "build:binaries": "bash scripts/build-executables.sh",
     "dev": "tsx src/index.ts",
     "lint": "biome check .",
     "lint:ci": "biome ci .",
