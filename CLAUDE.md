@@ -35,6 +35,13 @@ pnpm build
 ```
 Compiles TypeScript to `build/` directory and makes the binary executable.
 
+**Linting:**
+```bash
+pnpm lint          # Check code quality
+pnpm lint:fix      # Auto-fix issues
+pnpm lint:ci       # CI-optimized (used in GitHub Actions)
+```
+
 **Local Testing:**
 ```bash
 # Development mode with tsx
@@ -56,8 +63,9 @@ export PLANE_API_HOST_URL=https://app.plane.so  # optional, defaults to app.plan
 
 - Strict TypeScript mode enabled
 - Node16 module resolution
-- Never use `any` type
-- All Plane API responses are typed as `any` in request handlers but should use proper interfaces if adding new features
+- Biome linter enforces `noExplicitAny` rule (no `any` types allowed)
+- Plane API responses use proper TypeScript interfaces (`PlaneIntakeItem`, `PlaneIssueDetail`, etc.)
+- All code must pass `pnpm lint` before committing
 
 ## Tool Implementations
 
@@ -69,11 +77,26 @@ When modifying tools:
 
 ## Publishing
 
-The package is published to npm as `@amaiko-ai/plane-mcp-server`. Publishing is automated via GitHub Actions (`.github/workflows/publish.yml`).
+The package is published to npm as `@amaiko-ai/plane-mcp-server`. The entire release process is automated via GitHub Actions.
+
+**Automated Release Workflow (release-please):**
+1. Push commits to `main` using conventional commit format:
+   - `feat:` - New features (triggers minor version bump)
+   - `fix:` - Bug fixes (triggers patch version bump)
+   - `feat!:` or `BREAKING CHANGE:` - Breaking changes (triggers major version bump)
+   - `chore:`, `docs:`, `style:`, etc. - No version bump
+
+2. release-please automatically:
+   - Creates/updates a "Release PR" with version bump + changelog
+   - When you merge the PR → creates GitHub release + tag
+   - GitHub release triggers `.github/workflows/publish.yml`
+   - Package published to npm with provenance
+
+**Manual override:**
+- Go to Actions → "Publish to npm" → "Run workflow" to publish without a release
 
 **Pre-publish:**
 - `prepublishOnly` script runs `pnpm build` automatically
-- Ensure `version` in `package.json` is incremented
 
 ## API Status Codes
 
