@@ -71,3 +71,28 @@ jobs:
 
       - name: Test
         run: pnpm test
+
+  build-binary:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Build Linux binary (smoke test)
+        run: |
+          bun build --compile \
+            --target=bun-linux-x64 \
+            --minify \
+            --bytecode \
+            ./src/index.ts \
+            --outfile plane-mcp-server-linux-x64
+
+      - name: Verify binary exists and is executable
+        run: |
+          test -f plane-mcp-server-linux-x64
+          chmod +x plane-mcp-server-linux-x64
+          file plane-mcp-server-linux-x64
