@@ -14,7 +14,58 @@ MCP server for managing [Plane](https://plane.so) intake queue (triage workflow)
 
 ## Installation
 
-### Quick Install (Recommended)
+### Homebrew (Recommended for macOS/Linux)
+
+```bash
+brew install https://raw.githubusercontent.com/amaiko-ai/plane-mcp-server/main/Formula/plane-mcp-server.rb
+```
+
+Then configure Claude Desktop:
+
+```json
+{
+  "mcpServers": {
+    "plane-intake": {
+      "command": "plane-mcp-server",
+      "args": [],
+      "env": {
+        "PLANE_API_KEY": "your-api-key-here",
+        "PLANE_WORKSPACE_SLUG": "your-workspace-slug",
+        "PLANE_API_HOST_URL": "https://app.plane.so"
+      }
+    }
+  }
+}
+```
+
+Config location: `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS)
+
+**Updates:** `brew upgrade plane-mcp-server`
+
+### Windows
+
+Download the Windows binary from [releases](https://github.com/amaiko-ai/plane-mcp-server/releases/latest):
+- `plane-mcp-server-windows-x64.exe`
+
+Then configure Claude Desktop at `%APPDATA%\Claude\claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "plane-intake": {
+      "command": "C:\\path\\to\\plane-mcp-server-windows-x64.exe",
+      "args": [],
+      "env": {
+        "PLANE_API_KEY": "your-api-key-here",
+        "PLANE_WORKSPACE_SLUG": "your-workspace-slug",
+        "PLANE_API_HOST_URL": "https://app.plane.so"
+      }
+    }
+  }
+}
+```
+
+### Quick Install Script (Alternative - macOS/Linux)
 
 **macOS and Linux:**
 
@@ -22,13 +73,7 @@ MCP server for managing [Plane](https://plane.so) intake queue (triage workflow)
 curl -fsSL https://raw.githubusercontent.com/amaiko-ai/plane-mcp-server/main/install.sh | bash
 ```
 
-This will:
-- ✅ Download the correct binary for your platform
-- ✅ Install to `~/.local/bin/plane-mcp-server`
-- ✅ Configure Claude Desktop automatically
-- ✅ Restart Claude Desktop (macOS)
-
-**No Node.js required!**
+This will download, install, and configure everything automatically.
 
 ### Manual Installation
 
