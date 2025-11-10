@@ -15,6 +15,9 @@
   "scripts": {
     "build": "tsc && chmod +x build/index.js",
     "dev": "tsx src/index.ts",
+    "lint": "biome check .",
+    "lint:ci": "biome ci .",
+    "lint:fix": "biome check --write .",
     "prepublishOnly": "pnpm build",
     "test": "echo \"Tests coming soon\" && exit 0"
   },
@@ -46,6 +49,7 @@
     "@modelcontextprotocol/sdk": "^1.21.1"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.3.4",
     "@types/node": "^24.10.0",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
