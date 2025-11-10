@@ -78,6 +78,34 @@ Add to your `claude_desktop_config.json`:
 }
 ```
 
+**⚠️ macOS PATH Issue:**
+
+On macOS, Claude Desktop (GUI app) may not find `npx` in your PATH. If you see errors like `spawn npx ENOENT`, use the absolute path to `npx`:
+
+```bash
+# Find your npx location
+which npx
+# Example output: /usr/local/bin/npx or /Users/you/.nvm/versions/node/v20.0.0/bin/npx
+```
+
+Then update your config with the absolute path:
+
+```json
+{
+  "mcpServers": {
+    "plane-intake": {
+      "command": "/usr/local/bin/npx",
+      "args": ["-y", "@amaiko-ai/plane-mcp-server"],
+      "env": {
+        "PLANE_API_KEY": "your-api-key-here",
+        "PLANE_API_HOST_URL": "https://app.plane.so",
+        "PLANE_WORKSPACE_SLUG": "your-workspace"
+      }
+    }
+  }
+}
+```
+
 **Configuration file locations:**
 - macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
 - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
