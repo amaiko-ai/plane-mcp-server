@@ -48,7 +48,8 @@
   },
   "homepage": "https://github.com/amaiko-ai/plane-mcp-server#readme",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.21.1"
+    "@modelcontextprotocol/sdk": "^1.21.1",
+    "axios": "^1.13.2"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.4",

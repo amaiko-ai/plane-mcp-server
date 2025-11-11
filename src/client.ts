@@ -1,42 +1,53 @@
 /**
- * Plane API client
+ * Plane API client with connection pooling
  */
 
+import https from 'node:https';
+import axios, { type AxiosInstance } from 'axios';
 import { config } from './config.js';
 
 export class PlaneClient {
-  private readonly baseUrl: string;
-  private readonly apiKey: string;
+  private readonly client: AxiosInstance;
   private readonly workspaceSlug: string;
 
   constructor() {
-    this.baseUrl = config.baseUrl;
-    this.apiKey = config.apiKey;
     this.workspaceSlug = config.workspaceSlug;
+
+    // HTTPS agent with connection pooling
+    const httpsAgent = new https.Agent({
+      keepAlive: true,
+      maxSockets: 10,
+      maxFreeSockets: 5,
+      timeout: 60000,
+    });
+
+    this.client = axios.create({
+      baseURL: config.baseUrl,
+      timeout: 30000,
+      headers: {
+        'X-API-Key': config.apiKey,
+        'Content-Type': 'application/json',
+      },
+      httpsAgent,
+    });
   }
 
   async request(method: string, path: string, body: unknown = null): Promise<unknown> {
-    const url = `${this.baseUrl}/${path}`;
-    const options: RequestInit = {
-      method,
-      headers: {
-        'X-API-Key': this.apiKey,
-        'Content-Type': 'application/json',
-      },
-    };
-
-    if (body) {
-      options.body = JSON.stringify(body);
+    try {
+      const response = await this.client.request({
+        method,
+        url: `/${path}`,
+        data: body,
+      });
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const status = error.response?.status || 'unknown';
+        const message = error.response?.data || error.message;
+        throw new Error(`Plane API error (${status}): ${JSON.stringify(message)}`);
+      }
+      throw error;
     }
-
-    const response = await fetch(url, options);
-
-    if (!response.ok) {
-      const error = await response.text();
-      throw new Error(`Plane API error (${response.status}): ${error}`);
-    }
-
-    return response.json();
   }
 
   getWorkspacePath(path: string): string {
