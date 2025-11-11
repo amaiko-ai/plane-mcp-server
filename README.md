@@ -7,10 +7,23 @@ MCP server for managing [Plane](https://plane.so) intake queue (triage workflow)
 
 ## Features
 
-- **List intake items** with optional status filtering
+### Intake Management (Core)
+- **List intake items** with optional status filtering and summary stats
 - **Accept intake items** and convert to regular issues with labels
 - **Decline/reject intake items** to keep your queue clean
 - **Mark items as duplicates** to reduce noise
+
+### Context Discovery
+- **List projects** to find project IDs and identifiers
+- **Get issues by readable ID** (e.g., FIRST-123) for quick access
+- **List project issues** to find duplicates and understand context
+- **List labels** to find IDs for categorizing accepted items
+- **List states** to understand project workflow
+- **Get workspace members** for assigning issues
+
+### Collaboration
+- **Add comments** to document triage decisions and notes
+- **Get issue comments** to review discussion history
 
 ## Installation
 
@@ -213,9 +226,176 @@ Your workspace slug is in the URL: `https://app.plane.so/{workspace-slug}/...`
 
 ## Available Tools
 
+### Context Discovery
+
+#### list_projects
+
+List all projects in the workspace to find project IDs and identifiers.
+
+**Parameters:** None
+
+**Example:**
+```typescript
+// No parameters needed
+```
+
+**Response:**
+```json
+{
+  "total": 5,
+  "projects": [
+    {
+      "id": "abc-123",
+      "name": "Product Development",
+      "identifier": "PROD",
+      "description": "Main product features"
+    }
+  ]
+}
+```
+
+#### get_issue
+
+Get issue details using readable identifier (e.g., FIRST-123). Much easier than using UUIDs!
+
+**Parameters:**
+- `project_identifier` (string, required): Project identifier (e.g., "FIRST")
+- `issue_number` (string, required): Issue number (e.g., "123")
+
+**Example:**
+```typescript
+{
+  "project_identifier": "FIRST",
+  "issue_number": "123"
+}
+```
+
+#### list_project_issues
+
+List issues in a project. Useful for finding duplicates and understanding context. Returns up to 20 issues by default.
+
+**Parameters:**
+- `project_id` (string, required): UUID of the project
+- `limit` (number, optional): Max issues to return (default: 20, max: 100)
+
+**Example:**
+```typescript
+{
+  "project_id": "abc-123",
+  "limit": 50
+}
+```
+
+#### list_labels
+
+List all labels in a project. Essential for categorizing accepted intake items.
+
+**Parameters:**
+- `project_id` (string, required): UUID of the project
+
+**Example:**
+```typescript
+{
+  "project_id": "abc-123"
+}
+```
+
+**Response:**
+```json
+{
+  "total": 10,
+  "labels": [
+    {
+      "id": "label-uuid",
+      "name": "bug",
+      "color": "#FF0000",
+      "description": "Bug reports"
+    }
+  ]
+}
+```
+
+#### list_states
+
+List all workflow states in a project.
+
+**Parameters:**
+- `project_id` (string, required): UUID of the project
+
+**Example:**
+```typescript
+{
+  "project_id": "abc-123"
+}
+```
+
+#### get_workspace_members
+
+Get all members in the workspace for assigning issues.
+
+**Parameters:** None
+
+**Example:**
+```typescript
+// No parameters needed
+```
+
+**Response:**
+```json
+{
+  "total": 15,
+  "members": [
+    {
+      "id": "user-uuid",
+      "name": "John Doe",
+      "email": "john@example.com",
+      "role": 20
+    }
+  ]
+}
+```
+
+### Comments
+
+#### add_issue_comment
+
+Add a comment to an issue or intake item. Perfect for documenting triage decisions.
+
+**Parameters:**
+- `project_id` (string, required): UUID of the project
+- `issue_id` (string, required): UUID of the issue
+- `comment` (string, required): Comment text (plain text, automatically converted to HTML)
+
+**Example:**
+```typescript
+{
+  "project_id": "abc-123",
+  "issue_id": "issue-789",
+  "comment": "Accepted as feature request. Assigning to sprint 24."
+}
+```
+
+#### get_issue_comments
+
+Get all comments for an issue or intake item.
+
+**Parameters:**
+- `project_id` (string, required): UUID of the project
+- `issue_id` (string, required): UUID of the issue
+
+**Example:**
+```typescript
+{
+  "project_id": "abc-123",
+  "issue_id": "issue-789"
+}
+```
+
+### Intake Management
+
 ### list_intake_items
 
-List all intake items for a project.
+List all intake items for a project with optimized response format including summary statistics.
 
 **Parameters:**
 - `project_id` (string, required): UUID of the project
@@ -230,6 +410,30 @@ List all intake items for a project.
 {
   "project_id": "abc-123-def-456",
   "status": "-2"  // Only pending items
+}
+```
+
+**Response:**
+```json
+{
+  "summary": {
+    "total": 47,
+    "pending": 35,
+    "accepted": 8,
+    "declined": 3,
+    "duplicate": 1
+  },
+  "items": [
+    {
+      "id": "uuid",
+      "sequence_id": 123,
+      "name": "Bug in login",
+      "status": "pending",
+      "priority": "high",
+      "created_at": "2025-01-11T10:00:00Z"
+    }
+  ],
+  "note": "Showing 50 of 47 items"
 }
 ```
 
@@ -291,11 +495,28 @@ Mark an intake item as duplicate of another issue.
 
 Once configured, you can ask Claude:
 
+**Basic Intake Management:**
 ```
-"Show me all pending intake items for project ABC"
-"Accept intake item XYZ and add labels 'bug' and 'high-priority'"
-"Decline intake item ABC"
-"Mark intake item DEF as duplicate of issue GHI"
+"Show me all pending intake items for project PROD"
+"Accept PROD-123 and label it as a bug"
+"Decline PROD-124 with a comment explaining why"
+"Mark PROD-125 as duplicate of PROD-100"
+```
+
+**Context Discovery:**
+```
+"List all my projects"
+"Show me details for issue FIRST-123"
+"Find recent issues in project ABC that might be related to 'authentication'"
+"What labels are available in the Product project?"
+"Who are the members in this workspace?"
+```
+
+**Smart Workflows:**
+```
+"Check PROD-123, find if there are duplicates, and if not, accept it with 'feature' label"
+"Review all pending intake items, add comments to each explaining the triage decision"
+"List all high-priority bugs in FIRST project to help me triage new intake items"
 ```
 
 ### With MCP Inspector

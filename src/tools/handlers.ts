@@ -7,8 +7,14 @@ import { planeClient } from '../client.js';
 import {
   getStatusText,
   IntakeStatus,
+  type PlaneComment,
   type PlaneIntakeItem,
   type PlaneIntakeResponse,
+  type PlaneIssue,
+  type PlaneLabel,
+  type PlaneProject,
+  type PlaneState,
+  type PlaneWorkspaceMember,
 } from '../types.js';
 
 export async function handleToolCall(
@@ -17,6 +23,22 @@ export async function handleToolCall(
 ): Promise<CallToolResult> {
   try {
     switch (name) {
+      case 'list_projects':
+        return await listProjects();
+      case 'get_issue':
+        return await getIssue(args);
+      case 'list_project_issues':
+        return await listProjectIssues(args);
+      case 'list_labels':
+        return await listLabels(args);
+      case 'list_states':
+        return await listStates(args);
+      case 'get_workspace_members':
+        return await getWorkspaceMembers();
+      case 'add_issue_comment':
+        return await addIssueComment(args);
+      case 'get_issue_comments':
+        return await getIssueComments(args);
       case 'list_intake_items':
         return await listIntakeItems(args);
       case 'accept_intake_item':
@@ -47,6 +69,257 @@ export async function handleToolCall(
   }
 }
 
+async function listProjects(): Promise<CallToolResult> {
+  const data = (await planeClient.request(
+    'GET',
+    planeClient.getWorkspacePath('projects/')
+  )) as PlaneProject[];
+
+  return {
+    content: [
+      {
+        type: 'text',
+        text: JSON.stringify(
+          {
+            total: data.length,
+            projects: data.map((p) => ({
+              id: p.id,
+              name: p.name,
+              identifier: p.identifier,
+              description: p.description,
+            })),
+          },
+          null,
+          2
+        ),
+      },
+    ],
+  };
+}
+
+async function getIssue(args: Record<string, unknown>): Promise<CallToolResult> {
+  const { project_identifier, issue_number } = args as {
+    project_identifier: string;
+    issue_number: string;
+  };
+
+  const data = (await planeClient.request(
+    'GET',
+    planeClient.getWorkspacePath(
+      `projects/${project_identifier}/issues/${project_identifier}-${issue_number}/`
+    )
+  )) as PlaneIssue;
+
+  return {
+    content: [
+      {
+        type: 'text',
+        text: JSON.stringify(
+          {
+            id: data.id,
+            sequence_id: `${project_identifier}-${data.sequence_id}`,
+            name: data.name,
+            description: data.description_html,
+            priority: data.priority,
+            state: data.state,
+            labels: data.labels,
+            assignees: data.assignees,
+            created_at: data.created_at,
+          },
+          null,
+          2
+        ),
+      },
+    ],
+  };
+}
+
+async function listProjectIssues(args: Record<string, unknown>): Promise<CallToolResult> {
+  const { project_id, limit = 20 } = args as { project_id: string; limit?: number };
+
+  const actualLimit = Math.min(limit, 100);
+
+  const data = (await planeClient.request(
+    'GET',
+    `${planeClient.getWorkspacePath(`projects/${project_id}/issues/`)}?per_page=${actualLimit}&fields=id,sequence_id,name,priority,state,created_at`
+  )) as { results: PlaneIssue[] };
+
+  return {
+    content: [
+      {
+        type: 'text',
+        text: JSON.stringify(
+          {
+            count: data.results.length,
+            issues: data.results.map((i) => ({
+              id: i.id,
+              sequence_id: i.sequence_id,
+              name: i.name,
+              priority: i.priority,
+              state: i.state,
+            })),
+          },
+          null,
+          2
+        ),
+      },
+    ],
+  };
+}
+
+async function listLabels(args: Record<string, unknown>): Promise<CallToolResult> {
+  const { project_id } = args as { project_id: string };
+
+  const data = (await planeClient.request(
+    'GET',
+    planeClient.getWorkspacePath(`projects/${project_id}/labels/`)
+  )) as PlaneLabel[];
+
+  return {
+    content: [
+      {
+        type: 'text',
+        text: JSON.stringify(
+          {
+            total: data.length,
+            labels: data.map((l) => ({
+              id: l.id,
+              name: l.name,
+              color: l.color,
+              description: l.description,
+            })),
+          },
+          null,
+          2
+        ),
+      },
+    ],
+  };
+}
+
+async function listStates(args: Record<string, unknown>): Promise<CallToolResult> {
+  const { project_id } = args as { project_id: string };
+
+  const data = (await planeClient.request(
+    'GET',
+    planeClient.getWorkspacePath(`projects/${project_id}/states/`)
+  )) as PlaneState[];
+
+  return {
+    content: [
+      {
+        type: 'text',
+        text: JSON.stringify(
+          {
+            total: data.length,
+            states: data.map((s) => ({
+              id: s.id,
+              name: s.name,
+              color: s.color,
+              group: s.group,
+            })),
+          },
+          null,
+          2
+        ),
+      },
+    ],
+  };
+}
+
+async function getWorkspaceMembers(): Promise<CallToolResult> {
+  const data = (await planeClient.request(
+    'GET',
+    planeClient.getWorkspacePath('workspace-members/')
+  )) as PlaneWorkspaceMember[];
+
+  return {
+    content: [
+      {
+        type: 'text',
+        text: JSON.stringify(
+          {
+            total: data.length,
+            members: data.map((m) => ({
+              id: m.member.id,
+              name: m.member.display_name,
+              email: m.member.email,
+              role: m.role,
+            })),
+          },
+          null,
+          2
+        ),
+      },
+    ],
+  };
+}
+
+async function addIssueComment(args: Record<string, unknown>): Promise<CallToolResult> {
+  const { project_id, issue_id, comment } = args as {
+    project_id: string;
+    issue_id: string;
+    comment: string;
+  };
+
+  // Convert plain text to simple HTML
+  const commentHtml = `<p>${comment.replace(/\n/g, '</p><p>')}</p>`;
+
+  await planeClient.request(
+    'POST',
+    planeClient.getWorkspacePath(`projects/${project_id}/issues/${issue_id}/comments/`),
+    {
+      comment_html: commentHtml,
+    }
+  );
+
+  return {
+    content: [
+      {
+        type: 'text',
+        text: JSON.stringify(
+          {
+            success: true,
+            message: 'Comment added successfully',
+          },
+          null,
+          2
+        ),
+      },
+    ],
+  };
+}
+
+async function getIssueComments(args: Record<string, unknown>): Promise<CallToolResult> {
+  const { project_id, issue_id } = args as { project_id: string; issue_id: string };
+
+  const data = (await planeClient.request(
+    'GET',
+    planeClient.getWorkspacePath(`projects/${project_id}/issues/${issue_id}/comments/`)
+  )) as PlaneComment[];
+
+  return {
+    content: [
+      {
+        type: 'text',
+        text: JSON.stringify(
+          {
+            total: data.length,
+            comments: data.map((c) => ({
+              id: c.id,
+              comment: c.comment_html,
+              created_at: c.created_at,
+              created_by: c.created_by,
+            })),
+          },
+          null,
+          2
+        ),
+      },
+    ],
+  };
+}
+
 async function listIntakeItems(args: Record<string, unknown>): Promise<CallToolResult> {
   const { project_id, status } = args as { project_id: string; status?: string };
 
@@ -60,23 +333,32 @@ async function listIntakeItems(args: Record<string, unknown>): Promise<CallToolR
     items = items.filter((i: PlaneIntakeItem) => i.status === Number.parseInt(status, 10));
   }
 
+  // Calculate summary stats
+  const summary = {
+    total: items.length,
+    pending: items.filter((i) => i.status === IntakeStatus.PENDING).length,
+    accepted: items.filter((i) => i.status === IntakeStatus.ACCEPTED).length,
+    declined: items.filter((i) => i.status === IntakeStatus.DECLINED).length,
+    duplicate: items.filter((i) => i.status === IntakeStatus.DUPLICATE).length,
+  };
+
+  // Optimized response with minimal fields
   return {
     content: [
       {
         type: 'text',
         text: JSON.stringify(
           {
-            total: items.length,
-            items: items.map((i: PlaneIntakeItem) => ({
+            summary,
+            items: items.slice(0, 50).map((i: PlaneIntakeItem) => ({
               id: i.issue_detail.id,
               sequence_id: i.issue_detail.sequence_id,
               name: i.issue_detail.name,
-              status: i.status,
-              status_text: getStatusText(i.status),
+              status: getStatusText(i.status),
               priority: i.issue_detail.priority,
               created_at: i.issue_detail.created_at,
-              labels: i.issue_detail.labels,
             })),
+            note: items.length > 50 ? `Showing 50 of ${items.length} items` : undefined,
           },
           null,
           2
