@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.4.0](https://github.com/amaiko-ai/plane-mcp-server/compare/v1.3.1...v1.4.0) (2025-11-11)
+
+
+### Features
+
+* add context discovery tools and optimize LLM usability ([cea4703](https://github.com/amaiko-ai/plane-mcp-server/commit/cea47034deb135abf42a6a92e45761eab6e36135))
+
+
+### Miscellaneous
+
+* add release-please manifest file ([41b8a6d](https://github.com/amaiko-ai/plane-mcp-server/commit/41b8a6de34f21de8d6c8725b5693e0b616f241f6))
+
+
+### Documentation
+
+* updated install instructions for macOS ([0624b66](https://github.com/amaiko-ai/plane-mcp-server/commit/0624b6691685693d0a90248362a3078ac367ecbb))
+
+
+### CI/CD
+
+* added release-please config ([6ed052e](https://github.com/amaiko-ai/plane-mcp-server/commit/6ed052ecdc43aaac0f9f829c7db071f0345aa43b))
+
 ## [1.3.1](https://github.com/amaiko-ai/plane-mcp-server/compare/v1.3.0...v1.3.1) (2025-11-11)
 
 
