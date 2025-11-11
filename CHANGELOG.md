@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.3.0](https://github.com/amaiko-ai/plane-mcp-server/compare/v1.2.0...v1.3.0) (2025-11-11)
+
+
+### Features
+
+* replace fetch with axios for connection pooling ([713d00a](https://github.com/amaiko-ai/plane-mcp-server/commit/713d00aab25e7fde7b9ff962eafb791ed134cb98))
+
+
+### Bug Fixes
+
+* consolidate release workflows to fix trigger issues ([7b05f17](https://github.com/amaiko-ai/plane-mcp-server/commit/7b05f172fe3facd69f82925b322cf0b16b89bf9d))
+
 ## [1.2.0](https://github.com/amaiko-ai/plane-mcp-server/compare/v1.1.0...v1.2.0) (2025-11-11)
 
 
