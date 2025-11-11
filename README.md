@@ -44,8 +44,8 @@ Config location: `~/Library/Application Support/Claude/claude_desktop_config.jso
 
 ### Windows
 
-Download the Windows binary from [releases](https://github.com/amaiko-ai/plane-mcp-server/releases/latest):
-- `plane-mcp-server-windows-x64.exe`
+Download and extract the Windows binary from [releases](https://github.com/amaiko-ai/plane-mcp-server/releases/latest):
+- `plane-mcp-server-windows-x64.exe.zip` (extract to get `.exe`)
 
 Then configure Claude Desktop at `%APPDATA%\Claude\claude_desktop_config.json`:
 
@@ -81,11 +81,32 @@ This will download, install, and configure everything automatically.
 
 Download the pre-built binary for your platform from the [latest release](https://github.com/amaiko-ai/plane-mcp-server/releases/latest):
 
-- **macOS ARM64** (Apple Silicon): `plane-mcp-server-macos-arm64`
-- **macOS x64** (Intel): `plane-mcp-server-macos-x64`
-- **Linux x64**: `plane-mcp-server-linux-x64`
-- **Linux ARM64**: `plane-mcp-server-linux-arm64`
-- **Windows x64**: `plane-mcp-server-windows-x64.exe`
+- **macOS ARM64** (Apple Silicon): `plane-mcp-server-macos-arm64.xz`
+- **macOS x64** (Intel): `plane-mcp-server-macos-x64.xz`
+- **Linux x64**: `plane-mcp-server-linux-x64.xz`
+- **Linux ARM64**: `plane-mcp-server-linux-arm64.xz`
+- **Windows x64**: `plane-mcp-server-windows-x64.exe.zip`
+
+**After downloading:**
+
+**macOS/Linux:**
+```bash
+# Decompress the binary
+xz -d plane-mcp-server-macos-arm64.xz
+
+# Make it executable
+chmod +x plane-mcp-server-macos-arm64
+
+# macOS only: Remove quarantine attribute to allow execution
+xattr -d com.apple.quarantine plane-mcp-server-macos-arm64
+```
+
+**Windows:**
+```powershell
+# Extract the zip file (right-click → Extract All)
+# Or via PowerShell:
+Expand-Archive plane-mcp-server-windows-x64.exe.zip
+```
 
 Then configure Claude Desktop manually:
 
