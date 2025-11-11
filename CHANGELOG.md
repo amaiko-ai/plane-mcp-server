@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.2.0](https://github.com/amaiko-ai/plane-mcp-server/compare/v1.1.0...v1.2.0) (2025-11-11)
+
+
+### Features
+
+* add Homebrew formula for package manager installation ([6f7643d](https://github.com/amaiko-ai/plane-mcp-server/commit/6f7643d9296375e7c8003ffe43e8755540c97e95))
+* add one-command installer script for normal users ([f8603a3](https://github.com/amaiko-ai/plane-mcp-server/commit/f8603a3ba55945bc896492dda0c7bf96d9d7bafc))
+* add standalone binary builds for zero-dependency installation ([4adf049](https://github.com/amaiko-ai/plane-mcp-server/commit/4adf049c1d72f13919fec1a6dd66fce442ff0fa6))
+* switch to npm Trusted Publishing (OIDC, no tokens) ([d885f30](https://github.com/amaiko-ai/plane-mcp-server/commit/d885f3099ff445978f0f4325e87f76b20b1f0df2))
+
+
+### Bug Fixes
+
+* add dependency installation to binary build workflows ([90a9610](https://github.com/amaiko-ai/plane-mcp-server/commit/90a9610643c4125923053eda406ce71bde20423d))
+* add NPM_TOKEN env for npm authentication ([f812049](https://github.com/amaiko-ai/plane-mcp-server/commit/f8120490c2f3e57a195f401497ab43865e7c9ebc))
+
 ## [1.1.0](https://github.com/amaiko-ai/plane-mcp-server/compare/v1.0.0...v1.1.0) (2025-11-10)
 
 
