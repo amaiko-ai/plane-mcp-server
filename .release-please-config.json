@@ -1,0 +1,19 @@
+{
+  "release-type": "node",
+  "packages": {
+    ".": {}
+  },
+  "skip-github-pull-request": false,
+  "changelog-sections": [
+    {"type": "feat", "section": "Features"},
+    {"type": "fix", "section": "Bug Fixes"},
+    {"type": "chore", "section": "Miscellaneous", "hidden": false},
+    {"type": "docs", "section": "Documentation", "hidden": false},
+    {"type": "refactor", "section": "Code Refactoring", "hidden": false},
+    {"type": "ci", "section": "CI/CD", "hidden": false}
+  ],
+  "include-component-in-tag": false,
+  "include-v-in-tag": true,
+  "bump-minor-pre-major": true,
+  "bump-patch-for-minor-pre-major": false
+}
