@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/amaiko-ai/plane-mcp-server/compare/v1.3.0...v1.3.1) (2025-11-11)
+
+
+### Bug Fixes
+
+* test release workflow and downstream automation ([162ae65](https://github.com/amaiko-ai/plane-mcp-server/commit/162ae65be71ea1028ebeff887312308d4f282c7f))
+
 ## [1.3.0](https://github.com/amaiko-ai/plane-mcp-server/compare/v1.2.0...v1.3.0) (2025-11-11)
 
 
